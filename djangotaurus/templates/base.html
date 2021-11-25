@@ -1,0 +1,75 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+    {% load pwa %}
+    <head>
+        {% progressive_web_app_meta %}
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        {% block title %}<title>Title</title>{% endblock title %}
+        <link rel="apple-touch-icon" sizes="180x180" href="{% static '/images/Logo-180.png' %}">
+        <link rel="icon" type="image/png" sizes="32x32" href="{% static '/images/favicon-32x32.png' %}">
+        <link rel="icon" type="image/png" sizes="16x16" href="{% static '/images/favicon-16x16.png' %}">
+        <link rel="preload" as="script" href="{% static '/scripts/jQuery-v3.6.0.js' %}">
+        <link rel="preload" as="style" href="{% static '/style/style.css' %}">
+        <link rel="stylesheet" type="text/css" href="{% static '/style/style.css' %}">
+        {% block stylesheets %}{% endblock stylesheets %}
+    </head>
+        <body class="has-navbar-fixed-top">
+        <nav class="navbar is-fixed-top is-mobile" role="navigation" aria-label="main navigation">
+            <div class="navbar-brand">
+                <a class="navbar-item" href="{% url 'index'  %}">
+                    <img src="{% static '/svg/Logo.svg' %}"
+                        alt="Diamond Hands" /> Trade Market
+                </a>
+                <a id="nav-toggle" role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+                    <span aria-hidden="true"></span>
+                    <span aria-hidden="true"></span>
+                    <span aria-hidden="true"></span>
+                </a>
+            </div>
+            <div id="nav-menu" class="navbar-menu">
+                {% if user.is_authenticated %}
+                <div class="navbar-start">
+                    <a class="navbar-item" href="{% url 'favourites'  %}">Favourites</a>
+                    <a class="navbar-item" href="{% url 'portfolio'  %}">Portfolio</a>
+                    <a class="navbar-item" href="{% url 'history'  %}">History</a>
+                    <a class="navbar-item" href="{% url 'profile'  %}">Profile</a>
+                    {% if user.is_staff %}
+                    <a class="navbar-item" href="{% url 'users'  %}">User List</a>
+                    {% endif %}
+                </div>
+                <div class="navbar-end">
+                    <a class="navbar-item" href="{% url 'logout' %}">Logout</a>
+                </div>
+                {% else %}
+                <div class="navbar-end">
+                    <a class="navbar-item" href="{% url 'register' %}">Register</a>
+                    <a class="navbar-item" href="{% url 'login' %}">Login</a>
+                </div>
+                {% endif %}
+            </div>
+        </nav>
+        <div class="navbar-overlay"></div>
+        <div class="container mt-2 mb-2">
+            {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                <li class="notification is-{{message.tags}}">
+                    <button class="delete"></button>
+                    <p class="is-size-6 has-text-centered">{{ message }}</p>
+                </li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+        </div>
+        {% block content %}
+        {% endblock content %}
+        <script defer type="text/javascript" src="{% static '/scripts/jQuery-v3.6.0.js' %}"></script>
+        {% block scripts %}
+        {% endblock scripts %}
+        <script defer type="text/javascript" src="{% static '/scripts/notification.js' %}"></script>
+        <script defer type="text/javascript" src="{% static '/scripts/shared.js' %}"></script>
+    </body>
+</html>

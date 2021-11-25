@@ -1,0 +1,258 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}<title>Stock Details</title>{% endblock title %}
+{% block stylesheets %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/billboard.js/3.2.0/theme/insight.min.css" integrity="sha512-p6dPtWL7wJyUyElkJIZOZeEOq+NsP1myJzFoDqwIl0s2sMJk3mK8gIEzcbzKDZ+8tb/Z++d2Hsh+idqDWGpirw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+{% endblock stylesheets %}
+{% block content %}
+<div class="container">
+    {% if user.is_authenticated %}
+    <section class="card">
+        <div class="balance-box">
+            <span class="is-size-6 subtitle">TOTAL BALANCE</span>
+            <div class="balance-details">
+                <span>$</span>
+                <span id="balance" data-balance="{{ user.profile.account_balance }}">{{ user.profile.account_balance }}</span>
+                <span>SGD</span>
+            </div>
+        </div>
+    </section>
+    {% endif %}
+    <section class="card">
+        <div class="columns">
+            <div class="column is-one-fifth has-text-centered">
+                <figure class="image is-96x96 is-inline-block">
+                    <img src="{{ stock.image_url }}" alt="{{ stock.stock_symbol }}" class="stock_img" onerror=this.src="{% static '/svg/Logo.svg' %}" />
+                </figure>
+            </div>
+            <div class="columns column is-four-fifths is-flex-direction-column">
+                <label for="" class="column is-size-3 is-narrow bolder">{{ stock.stock_symbol }}</label>
+                <label for="" class="column is-size-6 is-narrow">{{ stock.company_name }}</label>
+                <div class="ml-3 is-flex">
+                    <label for="" class="label">Current Price:&nbsp;</label>
+                    <label class="label">${{ price.close }}</label>
+                </div>
+            </div>
+        </div>
+        <div class="tabs is-centered">
+            <ul>
+                <li id="stab" class="is-active" onclick="setTab(this)" data-target="#stkd"><a>Stock Details</a></li>
+                <li id="dtab" onclick="setTab(this)" data-target="#det"><a>More Details</a></li>
+            </ul>
+        </div>
+        <div id="stkd" class="">
+            <div id="cchart" class=""></div>
+            {% if user.is_authenticated %}
+            <div id="clmFav" class="">
+                <form id="fav-form" action="#" method="post"> {% csrf_token %}
+                    <input name="option" id="option" value="fav" hidden>
+                    {% if not fav %}
+                    <input id="btnFav" class="button is-yellow" type="submit" value="Favourite &#128151">
+                    {% endif %}
+                </form>
+                <form id="unfav-form" action="#" method="post"> {% csrf_token %}
+                    <input name="option" id="option" value="unfav" hidden>
+                    {% if fav %}
+                    <input id="btnUnfav" class="button is-alt is-yellow" type="submit" value="UnFavourite &#128148">
+                    {% endif %}
+                </form>
+            </div>
+            <div class="is-justify-content-flex-start is-flex-direction-row">
+                <input id="btnPStock" class="button is-primary" type="button" value="Purchase Stock">
+                <input id="btnSStock" class="button is-orange" type="button" value="Sell Stock">
+            </div>
+            {% endif %}
+        </div>
+        <div id="det" class="is-hidden">
+            <div class="control is-flex columns">
+                <label class="label bolder column is-one-fifth">Company Description:&nbsp;</label>
+                <label class="label column is-stock-desc">{{ stock.company_desc }}</label>
+            </div>
+            <div class="control is-flex columns">
+                <label class="label bolder column is-one-fifth">Sector:&nbsp;</label>
+                <label class="label column is-narrow">{{ stock.sector }}</label>
+            </div>
+            <div class="control is-flex columns">
+                <label class="label bolder column is-one-fifth">Industry:&nbsp;</label>
+                <label class="label column is-narrow">{{ stock.industry }}</label>
+            </div>
+        </div>
+    </section>
+</div>
+<div id="modal-purc" class="modal">
+    <div class="modal-background"></div>
+    <div class="modal-card">
+        <header class="modal-card-head">
+            <p class="modal-card-title">Stock Details</p>
+            <button class="delete" aria-label="close"></button>
+        </header>
+        <section class="modal-card-body">
+            <div class="content is-clipped">
+                <div class="columns">
+                    <div class="column is-one-quater has-text-centered">
+                        <figure class="image is-96x96 is-inline-block">
+                            <img src="{{ stock.image_url }}" alt="{{ stock.stock_symbol }}" class="stock_img" onerror=this.src="{% static '/svg/Logo.svg' %}" />
+                        </figure>
+                    </div>
+                    <div class="columns column is-four-fifths is-flex-direction-column">
+                        <label for="" class="column is-size-3 is-narrow bolder">{{ stock.stock_symbol }}</label>
+                        <label for="" class="column is-size-6 is-narrow">{{ stock.company_name }}</label>
+                        <div class="ml-3 is-flex">
+                            <label for="" class="label">Current Price:&nbsp;</label>
+                            <label id="cPrice" data-cprice="{{ price.close }}" class="label">${{ price.close }}</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="field">
+                    <div class="is-flex">
+                        <label for="" class="label column">Total Price:&nbsp;</label>
+                    </div>
+                    <div class="control is-flex">
+                        <input id="ttlPrice" class="input" type="text"
+                        placeholder="Total Price (SGD)" maxlength="10" disabled>
+                    </div>
+                </div>
+                <form id="purchase-form" class="login-form" action="{% url 'buyStock' %}" method="post"> {% csrf_token %}
+                    <div class="field">
+                        <div class="is-flex">
+                            <label for="purAmount" class="label">Lot Quantity:&nbsp;</label>
+                        </div>
+                        <div class="control is-flex">
+                            <input id="purAmount" class="input" type="number" name="quantity"
+                                placeholder="Number of shares to buy" min="1" max="1000000" maxlength="10" onchange="doValidate(this)" required>
+                                
+                        </div>
+                        <span id="purAmountError" class="help is-danger is-hidden">You cannot afford that</span>
+                    </div>
+                    <div class="field is-flex is-flex-direction-column">
+                        <label for="" class="label">Option Type:&nbsp;</label>
+                        <div class="control">
+                            <div class="select">
+                                <select name="option" id="option">
+                                    <option id="optBuy" value="BUY">BUY</option>
+                                    <option id="optSell" value="SELL">SELL</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <input name="stock_id" id="stock_id" value="{{ stock.id }}" hidden>
+                    <div class="mt-4">
+                        <input id="btnConfirmBuy" class="button is-primary" type="submit" value="Buy">
+                        <input id="btnCancelBuy" class="button is-alt" type="reset" value="Cancel">
+                    </div>
+                </form>
+                
+            </div>
+        </section>
+    </div>
+</div>
+<div id="modal-sell" class="modal">
+    <div class="modal-background"></div>
+    <div class="modal-card">
+        <header class="modal-card-head">
+            <p class="modal-card-title">Stock Details</p>
+            <button class="delete" aria-label="close"></button>
+        </header>
+        <section class="modal-card-body">
+            <div class="content is-clipped">
+                <div class="columns">
+                    <div class="column is-one-quarter has-text-centered">
+                        <figure class="image is-96x96 is-inline-block">
+                            <img src="{{ stock.image_url }}" alt="{{ stock.stock_symbol }}" class="stock_img" onerror=this.src="{% static '/svg/Logo.svg' %}" />
+                        </figure>
+                    </div>
+                    <div class="columns column is-four-fifths is-flex-direction-column">
+                        <label for="" class="column is-size-3 is-narrow bolder">{{ stock.stock_symbol }}</label>
+                        <label for="" class="column is-size-6 is-narrow">{{ stock.company_name }}</label>
+                        <div class="ml-3 is-flex">
+                            <label for="" class="label">Current Price:&nbsp;</label>
+                            <label class=" label">${{ price.close }}</label>
+                        </div>
+                    </div>
+                </div>
+                <label class="label is-size-5 bolder">Transactions</label>
+                <form id="sell-form-1" class="sell-form-1 is-flex is-flex-direction-column" action="{% url 'sellStock' %}" method="post">
+                    {% csrf_token %}
+                    <div id="buyRow" class="columns tsc_row">
+                        <div class="column is-one-quarter">
+                            <label class="column is-border-left-yellow">
+                                Buy Options Owned
+                            </label>
+                            <label class="column is-border-left-yellow">
+                               {% firstof buy.lot_quantity "0" %}
+                            </label>
+                        </div>
+                        <div class="column is-one-quarter">
+                            <label class="column is-border-left-orange">
+                                Purchase Price
+                            </label>
+                            <label class="column is-border-left-orange">
+                                ${% firstof buy.price "00.00" %}
+                            </label>
+                        </div>
+                        <input name="stock_id" id="stock_id" value="{{ stock.id }}" hidden>
+                        <input name="option" id="option" value="BUY" hidden>
+                        <div class="column tr-option">
+                            <div class="field has-addons">
+                                <div class="control">
+                                  <input id="iptSellBuyOption" data-price="{% firstof buy.price '00.00' %}" data-owned="{% firstof buy.lot_quantity '0' %}" class="input" min="1" max="1000000" type="number" name="buyOpt" onchange="doValidate(this)" placeholder="Quantity to sell" required>
+                                </div>
+                                <div class="control">
+                                  <input id="btnSellBuyOption" class="button is-medium is-addon" type="submit" value="Sell">
+                                </div>
+                            </div>
+                            <span id="iptSellBuyOptionError" class="help is-danger is-hidden">You do not own that amount shares</span>
+                            <label class="sellFor" id="totalForSB"></label>
+                        </div>
+                    </div>
+                </form>
+                <form id="sell-form-2" class="sell-form-2 is-flex is-flex-direction-column" action="{% url 'sellStock' %}" method="post">
+                    {% csrf_token %}
+                    <div id="sellRow" class="columns tsc_row mt-6">
+                        <div class="column is-one-quarter">
+                            <label class="column is-border-left-yellow">
+                                Sell Options Owned
+                            </label>
+                            <label class="column is-border-left-yellow">
+                                {% firstof sell.lot_quantity "0" %}
+                            </label>
+                        </div>
+                        <div class="column is-one-quarter">
+                            <label class="column is-border-left-orange">
+                                Purchase Price
+                            </label>
+                            <label class="column is-border-left-orange">
+                                ${% firstof sell.price "00.00" %}
+                            </label>
+                        </div>
+                        <input name="stock_id" id="stock_id" value="{{ stock.id }}" hidden>
+                        <input name="option" id="option" value="SELL" hidden>
+                        <div class="column tr-option">
+                            <div class="field has-addons">
+                                <div class="control">
+                                  <input id="iptSellSellOption" data-price="{% firstof sell.price '00.00' %}" data-owned="{% firstof sell.lot_quantity '0' %}" class="input" min="1" max="1000000" type="number" name="sellOpt" onchange="doValidate(this)" placeholder="Quantity to sell" required>
+                                </div>
+                                <div class="control">
+                                  <input id="btnSellSellOption" class="button is-medium is-addon" type="submit" value="Sell">
+                                </div>
+                              </div>
+                              <span id="iptSellSellOptionError" class="help is-danger is-hidden">You do not own that amount shares</span>
+                              <label class="sellFor" id="totalForSS"></label>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </section>
+    </div>
+</div>
+{% endblock content %}
+{% block scripts %}
+<script>
+    let chart_date = {{ chart_date | safe }}
+    let chart_data = {{ chart_data | safe }}
+</script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/d3/6.7.0/d3.min.js" integrity="sha512-cd6CHE+XWDQ33ElJqsi0MdNte3S+bQY819f7p3NUHgwQQLXSKjE4cPZTeGNI+vaxZynk1wVU3hoHmow3m089wA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/billboard.js/3.2.0/billboard.min.js" integrity="sha512-9yAiC226dM+uszaJLaDiCx1lVdB1iXvmopsgzbOSJ2MFRn2C7JSVYBzN3ROOLlPzqUiM8KMtYbC0B1x4nmO9nw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script defer type="text/javascript" src="{% static '/scripts/chart.js' %}"></script>
+<script defer type="text/javascript" src="{% static '/scripts/stockDetails.js' %}"></script>
+{% endblock scripts %}

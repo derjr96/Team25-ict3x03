@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}<title>User List</title>{% endblock title %}
+{% block stylesheets %}
+<link rel="preload"  as="style" href="{% static '/datatable/datatables.min.css' %}"/>
+<link rel="preload"  as="script" href="{% static '/datatable/datatables.min.js' %}"/>
+<link rel="stylesheet" type="text/css" href="{% static '/datatable/datatables.min.css' %}"/>
+{% endblock stylesheets %}
+{% block content %}
+{% csrf_token %}
+<div class="container">
+    <div class="balance-box">
+        <div class="balance-details">
+            <h1 id='balance'></h1>
+        </div>
+    </div> 
+    <table id="users" class="display table is-hoverable" aria-label="Users">
+        <thead>
+            <tr>
+                <th scope="col"></th>
+                <th scope="col">First Name</th>
+                <th scope="col">Last Name</th>
+                <th scope="col">Email</th>
+                <th scope="col">Balance (SGD)</th>
+                <th scope="col">Last Login</th>
+                <th scope="col"></th>
+            </tr>
+        </thead>
+        <tbody>
+            {%for student in students%}
+            <tr id="{{ student.id }}" data-href="{% url 'staffUserProfile' user_id=student.id %}">
+                <td></td>
+                <td>{{ student.profile.first_name }}</td>
+                <td>{{ student.profile.last_name }}</td>
+                <td>{{ student.email }}</td>
+                <td>{{ student.profile.account_balance }}</td>
+                <td>{{ student.last_login }}</td>
+                <td>
+                    <a id="" class="button is-alt is-small my-0" href="{% url 'staffUserProfile' user_id=student.id %}">More Details</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock content %}
+{% block scripts %}
+<script defer type="text/javascript" src="{% static '/datatable/datatables.min.js' %}"></script>
+<script defer type="text/javascript" src="{% static '/scripts/table.js' %}"></script>
+{% endblock scripts %}

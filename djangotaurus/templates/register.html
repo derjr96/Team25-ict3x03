@@ -1,0 +1,125 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+    {% load pwa %}
+    <head>
+        {% progressive_web_app_meta %}
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Register</title>
+        <link rel="apple-touch-icon" sizes="180x180" href="{% static '/images/Logo-180.png' %}">
+        <link rel="icon" type="image/png" sizes="32x32" href="{% static '/images/favicon-32x32.png' %}">
+        <link rel="icon" type="image/png" sizes="16x16" href="{% static '/images/favicon-16x16.png' %}">
+        <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" />
+        <link rel="stylesheet" type="text/css" href="https://npmcdn.com/flatpickr/dist/themes/dark.css" />
+        <link rel="preload" as="script" href="{% static '/scripts/jQuery-v3.6.0.js' %}">
+        <link rel="preload" as="style" href="{% static '/style/style.css' %}">
+        <link rel="stylesheet" type="text/css" href="{% static '/style/style.css' %}">
+    </head>
+
+    <body>
+        <div class="container">
+            <div class="full-card">
+                {% if messages %}
+                <ul class="messages">
+                    {% for message in messages %}
+                    <li class="notification is-{{message.tags}}">
+                        <button class="delete"></button>
+                        <p class="is-size-6 has-text-centered">{{ message }}</p>
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+                <h1 class="login-header is-size-2 has-text-centered">Create a new account</h1>
+                <form id="register-form" class="login-form"> {% csrf_token %}
+                    <div class="field-container">
+                        <div class="field">
+                            <div class="control">
+                                <input id="fn" name="firstName" class="input" type="text" placeholder="First name" minlength="2"
+                                    maxlength="45" onkeyup="doValidate(this)" required>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <div class="control">
+                                <input id="ln" name="lastName" class="input" type="text" placeholder="Last name" minlength="2"
+                                    maxlength="45" onkeyup="doValidate(this)" required>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="help in-field">No special characters or numbers</p>
+                    <div class="field">
+                        <div class="control">
+                            <label for="dob" class="label is-hidden-desktop">Date of Birth:</label>
+                            <input id="dob" name="dob" class="input" type="text" placeholder="Date of birth" maxlength="10"
+                                onchange="doValidate(this)" required>
+                        </div>
+                        <p class="help in-field">You are required to be at least 16 years old to register</p>
+                    </div>
+                    <div class="field">
+                        <div class="control">
+                            <input id="em" name="email" class="input" type="email" placeholder="Email Address" maxlength="100"
+                                onkeyup="doValidate(this)" required>
+                        </div>
+                        <p class="help in-field">Example: johndoe@foobar.com</p>
+                    </div>
+                    <div class="field-container">
+                        <div class="field">
+                            <div class="control has-icons-right">
+                                <input id="pw" class="input" type="password" name="password" placeholder="Password"
+                                    minlength="8" maxlength="256" onkeyup="doValidate(this)" required>
+                                <span id="pwEye" class="icon is-action is-large is-right">
+                                    <svg class="eye fa-eye"></svg>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <div class="control has-icons-right">
+                                <input id="cpw" class="input" type="password" name="confirm_password"
+                                    placeholder="Confirm Password" minlength="8" maxlength="256"
+                                    onkeyup="doValidate(this)" required>
+                                <span id="cpwEye" class="icon is-action is-large is-right">
+                                    <svg class="eye fa-eye"></svg>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="help in-field">Minimum 8 characters</p>
+                    <div>
+                        <span id="error_text" class="help has-text-danger is-hidden">Custom error message</span>
+                    </div>
+                    <div class="pwn-container is-size-6">
+                        <div class="pwn-step1 is-hidden" onClick="doPwn()">
+                            Check if password was exposed in data breaches?&#x1F914;
+                        </div>
+                        <div class="pwn-step2 is-hidden">
+                            Working on it... &#x23F1;
+                        </div>
+                        <div class="pwn-step3-good has-text-success is-hidden">
+                            Looks like you are all clear! &#x1F44D;
+                        </div>
+                        <div class="pwn-step3-danger has-text-danger is-hidden">
+                            Oh no! Looks like this password was previously leaked in a data breach!&#x1F631;
+                        </div>
+                    </div>
+                    <div class="py-0">
+                        <br><div class="g-recaptcha" id="captcha" name="c1" data-sitekey={{ sitekey }}></div>
+                        <input id="btnRegister" class="button is-medium" type="button" value="Sign Up">
+                        <a id="btnBackToLogin" class="button is-alt is-medium" href="{% url 'login' %}">Back to Login</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <script>
+            var pake_url = "{% static '/scripts/pake-register.js' %}";
+            var token = '{{csrf_token}}';
+        </script>
+        <script defer type="text/javascript" src="{% static '/scripts/jQuery-v3.6.0.js' %}"></script>
+        <script defer src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+        <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+        <script defer type="text/javascript" src="{% static '/scripts/sha1.js' %}"></script>
+        <script defer type="text/javascript" src="{% static '/scripts/register.js' %}"></script>
+        <script defer type="text/javascript" src="{% static '/scripts/notification.js' %}"></script>
+    </body>
+
+</html>

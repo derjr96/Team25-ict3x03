@@ -1,0 +1,792 @@
+// sass --watch ./style/style.scss ./style/style.css
+
+@import url("https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap");
+@import url("https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css");
+
+$font-family: "Quicksand",
+sans-serif;
+$font-1: #fff;
+$font-2: #8e929a;
+$accent-1: #7a87de;
+$accent-2: #ff796b;
+$accent-3: #faaf68;
+$green:	#00d1b2;
+$red:#ff3860;
+$bg: linear-gradient(360deg, #111622 0%, #1f2535 100%);
+$bg-alt: linear-gradient(90deg, #212636 0%, #111624 100%);
+$bg-tb: linear-gradient(180deg, #212636 0%, #111624 100%);
+$bg-nav: #212636;
+$bg-accent: #2e3545;
+$container: #2b3141;
+$unhover: #1f2633;
+$unhover-shape: #7c7f89;
+$side-bow-shadow: 4px 0px 30px 10px rgba(43, 49, 65, 0.45);
+$full-card-shadow: 0px 0px 30px 10px rgba(43, 49, 65, 0.45);
+
+:root {
+    font-family: #{$font-family};
+    font-size: 16px;
+    color: #{$font-1};
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+*::selection {
+    background: $accent-1;
+    color: rgb(15, 15, 15);
+}
+
+body {
+    background: $bg-tb;
+    height: 100%;
+    min-height: 100vh;
+}
+
+body,
+h1,
+h2,
+h3,
+p {
+    font-family: $font-family;
+    color: $font-1;
+    margin: 0;
+    padding: 0;
+}
+
+@mixin centered($background: #fff, $flexD: row) {
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    flex-direction: $flexD;
+    background: $background;
+    padding: clamp(2rem, 6vw, 15rem);
+}
+
+@mixin btn($bdColor: $accent-1, $bgColor: $accent-1) {
+    color: $font-1;
+    border-color: $bdColor;
+    background-color: $bgColor;
+    transition: 0.25s;
+}
+
+@mixin btn-alt($bdColor: $accent-1, $color: $font-1) {
+    color: $color;
+    border-radius: 0;
+    border-color: $bdColor;
+    background-color: $unhover;
+    transition: 0.25s;
+}
+
+@mixin btn-pseudo($color: $accent-1, $font-color:$font-1) {
+    color: $font-color;
+    border-color: $color;
+    box-shadow: 0 0.5em 0.5em -0.4em $color;
+    transform: translateY(-0.25em);
+}
+
+%full {
+    min-height: 100vh;
+    margin: 0;
+}
+%input-icon{
+    background-size: 1.2rem !important;
+    background-position: center !important;
+    height:inherit;
+    width: auto;
+}
+
+
+.hidden {
+    display: hidden;
+}
+
+.bg {
+    background: $bg;
+
+    .alt {
+        background: $bg-alt;
+    }
+}
+
+.subtitle {
+    color: $font-2;
+}
+
+.card {
+    color: $font-1;
+    background-color: $container;
+    padding: clamp(1rem, 10vw, 1.5rem);
+    margin-bottom: 0.5rem;
+
+    .balance-box {
+        padding: 0;
+    }
+}
+
+.navbar {
+    background-color: $bg-nav;
+    color: $font-1;
+}
+
+.navbar-brand {
+    height: 3.25rem;
+    padding-left: 1rem;
+
+    a.navbar-item {
+        padding: 0;
+
+        img {
+            min-height: 3.25rem;
+        }
+    }
+
+    .navbar-link.is-active,
+    .navbar-link:focus,
+    .navbar-link:focus-within,
+    .navbar-link:hover,
+    a.navbar-item.is-active,
+    a.navbar-item:focus,
+    a.navbar-item:focus-within,
+    a.navbar-item:hover {
+        background-color: transparent;
+        color: $accent-1;
+        border: none;
+    }
+}
+
+a.navbar-item {
+    color: $font-1;
+}
+
+.navbar-link.is-active,
+.navbar-link:focus,
+.navbar-link:focus-within,
+.navbar-link:hover,
+a.navbar-item.is-active,
+a.navbar-item:focus,
+a.navbar-item:focus-within,
+a.navbar-item:hover {
+    background-color: transparent;
+    color: $accent-1;
+    border-top: 2px solid $accent-1;
+}
+
+.navbar-start {
+    flex-grow: 1;
+    justify-content: center;
+}
+
+.navbar-end {
+    padding-right: 1rem;
+}
+
+.label {
+    font-weight: 400;
+    color: $font-1;
+
+    &.bolder {
+        font-weight: 600;
+    }
+}
+
+.fa-eye {
+    @extend %input-icon;
+    background: url('/static/svg/eye.svg') no-repeat;
+}
+.fa-eye-slash {
+    @extend %input-icon;
+    background: url('/static/svg/eye-slash.svg') no-repeat;
+}
+
+.control.has-icons-right {
+    .icon {
+        color: $font-1;
+        height: 3rem;
+
+        &.is-action {
+            cursor: pointer;
+            pointer-events: initial !important;
+        }
+    }
+}
+
+.help.in-field {
+    color: $font-2;
+    margin-bottom: 0.75rem;
+}
+
+.error-msg {
+    color: $accent-2;
+}
+
+.select select{
+    background-color: $unhover;
+    border-color: transparent;
+    border-radius: 4px;
+    color: $font-1;
+
+    &:not(.is-danger):hover,
+    &:not(.is-danger):active,
+    &:not(.is-danger):focus {
+        border-color: $accent-1;
+    }
+}
+
+.input {
+    color: $font-1;
+    background-color: $unhover;
+    border-radius: 5px;
+    border-color: transparent;
+    padding: 1.5rem;
+
+    &:not(.is-danger):hover,
+    &:not(.is-danger):active,
+    &:not(.is-danger):focus {
+        border-color: $accent-1;
+    }
+
+    &::placeholder {
+        color: $font-2;
+    }
+
+    &:disabled {
+        background-color: $unhover;
+        border-color: transparent;
+    }
+}
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
+#otp-container{
+    display:flex;
+    justify-content: center;
+}
+.miniInput{
+    text-align:center;
+    padding:0;
+    margin:0 0.2rem;
+}
+
+a {
+    color: $accent-1;
+
+    &:hover {
+        color: $accent-3;
+    }
+}
+
+.button {
+    @include btn;
+    margin: 0.5rem 0;
+
+    &:hover,
+    &:focus,
+    &:active {
+        @include btn-pseudo;
+    }
+
+    &:disabled {
+        color: $font-1;
+        background-color: $unhover-shape;
+        border-color: transparent;
+    }
+
+    &.is-yellow {
+        @include btn($accent-3, $accent-3);
+
+        &:hover,
+        &:focus,
+        &:active {
+            @include btn-pseudo($accent-3, $font-1);
+        }
+    }
+
+    &.is-orange {
+        @include btn($accent-2, $accent-2);
+
+        &:hover,
+        &:focus,
+        &:active {
+            @include btn-pseudo($accent-2, $font-1);
+        }
+    }
+
+
+    &.is-alt {
+        @include btn-alt($accent-1, $accent-1);
+
+        &:hover,
+        &:focus,
+        &:active {
+            @include btn-pseudo($accent-1, $accent-1);
+        }
+
+        &.is-orange {
+            @include btn-alt($accent-2, $accent-2);
+
+            &:hover,
+            &:focus,
+            &:active {
+                @include btn-pseudo($accent-2, $accent-2);
+            }
+        }
+
+        &.is-yellow {
+            @include btn-alt($accent-3, $accent-3);
+
+            &:hover,
+            &:focus,
+            &:active {
+                @include btn-pseudo($accent-3, $accent-3);
+            }
+        }
+    }
+
+    &.is-primary {
+
+        &:hover,
+        &:focus,
+        &:active {
+            @include btn-pseudo($green);
+        }
+    }
+
+    &.is-danger {
+
+        &:hover,
+        &:focus,
+        &:active {
+            @include btn-pseudo($red);
+        }
+    }
+
+	&.is-addon{
+		margin:0;
+	}
+}
+
+.container {
+    background-color: transparent;
+    display: flex;
+    flex-direction: column;
+    padding: 0 clamp(0rem, 100vh, 4rem);
+}
+
+.full-card {
+    color: $font-1;
+    box-shadow: $full-card-shadow;
+    width: 100%;
+    @extend %full;
+    @include centered($container, column);
+
+    &.with-nav {
+        height: calc(100vh - 3.5rem);
+    }
+}
+
+.tabs {
+    a {
+        color: $font-1;
+
+        &:hover {
+            border-bottom-color: $accent-2;
+            color: $accent-2;
+        }
+    }
+
+    li.is-active {
+        a {
+            border-bottom-color: $accent-1;
+            color: $accent-1;
+        }
+    }
+}
+
+.field-container {
+    display: flex;
+    flex-direction: row;
+
+    .field {
+        flex-grow: 1;
+        margin-bottom: 0;
+
+        &:not(:last-child) {
+            margin-right: 0.5em;
+        }
+    }
+}
+
+// Specifics
+
+#login {
+    @extend %full;
+}
+
+.login {
+    @include centered($container, column);
+    @extend %full;
+    z-index: 1;
+    box-shadow: $side-bow-shadow;
+}
+
+.login-header {
+    padding-bottom: clamp(2rem, 10vw, 8rem);
+}
+
+.login-form {
+    padding-bottom: 2rem;
+}
+
+.login-btn-box {
+    padding-top: 3rem;
+}
+
+.illus {
+    @include centered($bg);
+}
+
+.illus-size {
+    width: clamp(60%, 40vh, 100%);
+    align-self: center;
+}
+.logo {
+    height: 30%;
+    align-self: center;
+}
+
+.pwn-container {
+    width: fit-content;
+}
+
+.pwn-step1 {
+    cursor: pointer;
+}
+
+.balance-box {
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+    justify-content: center;
+    align-items: center;
+    padding-block: clamp(1rem, 10vw, 2rem);
+
+    .balance-details {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        flex-wrap: nowrap;
+        align-content: center;
+        align-items: center;
+        font-size: clamp(1rem, 10vw, 1.2rem);
+        color: $font-2;
+    }
+
+    #balance {
+        color: $font-1;
+        padding: 0 0.5rem;
+        font-size: clamp(3rem, 10vw, 4rem);
+    }
+}
+
+.button-set {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-content: center;
+    align-items: flex-start;
+
+    a,
+    input {
+        margin-bottom: 1rem;
+    }
+}
+
+.deposit-box {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+// Datatable related
+.table-title {
+    font-weight: 600;
+    font-size: clamp(1.5rem, 5vw, 2rem);
+    padding-bottom: 1rem;
+    text-align: center;
+}
+
+.table {
+    background-color: $unhover;
+
+    thead {
+        tr th {
+            border-bottom: 1px solid $unhover-shape;
+            color: $font-2;
+            padding: 1rem 0.75em;
+
+            &.sorting {
+
+                &:before,
+                &:after {
+                    bottom: 1.1rem;
+                }
+            }
+        }
+    }
+
+    tbody>tr {
+        cursor: pointer;
+    }
+
+    td {
+        border: none;
+        color: $font-2;
+    }
+
+	tbody>tr[data-href] {
+		cursor: pointer;
+	}
+
+    &.is-hoverable tbody tr {
+        &:not(.is-selected):hover {
+            background-color: $container;
+
+            td {
+                color: $font-1;
+            }
+        }
+
+        &.is-selected {
+            background-color: $accent-1;
+            color: $font-1;
+            transition: color 1s;
+        }
+    }
+}
+
+.dt-bulma {
+    color: $font-1;
+    border-radius: 5px;
+    background-color: $unhover;
+    padding: 2rem 0;
+
+    div {
+        color: $font-1;
+    }
+}
+
+.search {
+    border-color: $bg-accent;
+    margin-right: 1rem;
+}
+.name-cell{
+    word-wrap:break-word !important;
+    white-space:normal !important;
+    min-width:20rem !important;
+}
+
+.modal-card-head {
+    background-color: $container;
+
+    .modal-card-title {
+        color: $font-1;
+    }
+}
+
+.modal-card-body {
+    background-color: $container;
+    color: $font-1;
+
+    .content {
+        div.columns {
+            label.column {
+                color: $font-1;
+            }
+
+            div.column {
+                color: $font-2;
+            }
+        }
+    }
+}
+#stkd{
+    flex-basis:auto;
+    flex-shrink:1;
+    flex-grow:1;
+}
+#cchart{
+    flex-basis:auto;
+    flex-shrink:1;
+    flex-grow:1;
+}
+.bb-chart-arc path{
+    stroke:transparent !important;
+}
+.bb-chart-arcs .bb-chart-arcs-title{
+    font-size: 1rem !important;
+    fill:$font-1 !important;
+}
+
+.bb-tooltip {
+    background-color: $unhover !important;
+    border: none !important;
+    tr{
+        background-color: $unhover !important;
+        th{
+            color:$font-1 !important;
+        }
+    }
+    td{
+        background-color: $unhover !important;
+    }
+}
+
+.bb-tooltip-container {
+    font-family: $font-family !important;
+}
+
+.bb-legend-item text{
+    fill:$font-1 !important;
+}
+
+.bb-axis text{
+    fill:$font-1 !important;
+}
+
+.bb svg{
+    font-family: $font-family !important;
+}
+
+.bb text {
+    font-family: $font-family !important;
+}
+.tsc_row{
+    div{
+        label{
+            background-color: $unhover;
+            &.sellFor{
+                background-color:transparent;
+            }
+        }
+    }
+}
+.is-border-left-yellow{
+    border-left:4px solid $accent-3;
+}
+.is-border-left-orange{
+    border-left:4px solid $accent-2;
+}
+
+.tr-option{
+	display:flex;
+	align-items:center;
+    justify-content:center;
+    flex-direction: column;
+    .input{
+        width:10rem;
+    }
+}
+
+.stock_img{
+    background-color: #fff;
+    padding: 0.5rem;
+    border-radius: .25rem;
+}
+
+
+@media (max-width: 767px) {
+    .container {
+        padding: 0;
+    }
+
+    .login-btn-box {
+        >.button {
+            width: 100%;
+        }
+    }
+
+    .field-container {
+        flex-direction: column;
+
+        .field:not(:last-child) {
+            margin-right: 0;
+            margin-bottom: 0.75rem;
+        }
+    }
+
+    .dataTables_filter {
+        display: flex;
+        justify-content: center;
+    }
+
+    .button {
+        margin: 0.75rem 0;
+    }
+
+    .button-set {
+        align-items: stretch;
+
+        a,
+        input {
+            margin: 0 0 1rem 0;
+        }
+    }
+
+    .deposit-box {
+        align-items: stretch;
+
+        a,
+        input {
+            margin: 0 0 0.5rem 0;
+        }
+    }
+
+    .is-stock-desc {
+        overflow-y: scroll;
+        max-height: 35vh;
+    }
+
+}
+
+@media screen and (max-width: 1023px) {
+    #nav-toggle {
+        color: $accent-3;
+    }
+
+    .navbar-brand {
+        padding-left: 0;
+    }
+
+    .navbar-menu {
+        background-color: $bg-nav;
+        box-shadow: 0 8px 16px rgb(0 0 0 / 10%);
+        padding: 0.5rem 0;
+    }
+
+    .navbar-link.is-active,
+    .navbar-link:focus,
+    .navbar-link:focus-within,
+    .navbar-link:hover,
+    a.navbar-item.is-active,
+    a.navbar-item:focus,
+    a.navbar-item:focus-within,
+    a.navbar-item:hover {
+        background-color: $container;
+        color: $accent-1;
+        border: none;
+    }
+}

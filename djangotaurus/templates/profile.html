@@ -1,0 +1,131 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}<title>Profile</title>{% endblock title %}
+{% block stylesheets %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/billboard.js/3.2.0/theme/insight.min.css" integrity="sha512-p6dPtWL7wJyUyElkJIZOZeEOq+NsP1myJzFoDqwIl0s2sMJk3mK8gIEzcbzKDZ+8tb/Z++d2Hsh+idqDWGpirw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+{% endblock stylesheets %}
+{% block content %}
+<div class="container">
+    <section class="card">
+        <div class="balance-box">
+            <span class="is-size-6 subtitle">TOTAL BALANCE</span>
+            <div class="balance-details">
+                <span>$</span>
+                <span id="balance">{{ user.profile.account_balance }}</span>
+                <span>SGD</span>
+            </div>
+        </div>
+    </section>
+    <section class="card">
+        <div class="tabs is-centered">
+            <ul>
+                <li id="stab" class="is-active" onclick="setTab(this)" data-target="#stats"><a>Statistics</a></li>
+                <li id="dtab" onclick="setTab(this)" data-target="#det"><a>Details</a></li>
+            </ul>
+        </div>
+        <div id="stats" class="">
+            <label for="" class="label is-size-4">My Statistics</label>
+            <div id="chart" class=""></div>
+            <div class="field">
+                <div class="control is-flex columns">
+                    <label class="label bolder is-size-6 column is-one-fifth">Invested Amount:&nbsp;</label>
+                    <label id="inv" class="label is-size-6 column is-narrow">SGD {{ invested }}</label>
+                </div>
+            </div>
+            <div class="field">
+                <div class="control is-flex columns">
+                    <label class="label bolder is-size-6 column is-one-fifth">Total Holding:&nbsp;</label>
+                    <label id="hol" class="label is-size-6 column is-narrow">SGD {{ total }}</label>
+                </div>
+            </div>
+        </div>
+        <div id="det" class="is-hidden">
+            <label class="label is-size-4">My Details</label>
+            <form id="profile-form" class="login-form" action="" method="post"> {% csrf_token %}
+                <div class="field-container">
+                    <div class="field">
+                        <div class="control">
+                            <input id="fn" name="fn" class="input" type="text" placeholder="First name" minlength="2"
+                                maxlength="45" onkeyup="doValidate(this)" value="{{ user.profile.first_name }}" required
+                                disabled>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <div class="control">
+                            <input id="ln" name="ln" class="input" type="text" placeholder="Last name" minlength="2"
+                                maxlength="45" onkeyup="doValidate(this)" value="{{ user.profile.last_name }}" required
+                                disabled>
+                        </div>
+                    </div>
+                </div>
+                <p class="help in-field"></p>
+                <div class="field">
+                    <div class="control">
+                        <input id="dob" class="input" type="text" placeholder="Date of birth" maxlength="10"
+                               value="{{ dob }}" required disabled>
+                    </div>
+                </div>
+                <div class="field">
+                    <div class="control">
+                        <input id="em" class="input" type="email" placeholder="Email Address" maxlength="100"
+                               disabled value="{{ user.email }}">
+                    </div>
+                    <p class="help in-field" data-help="helper"></p>
+                </div>
+                <div class="field">
+                    <div class="control">
+                        <a id="btnChangePw" class="button is-alt is-yellow" href="{% url 'changePassword' %}">Change
+                            Password</a>
+                    </div>
+                    <p class="help in-field" data-help="helper"></p>
+                </div>
+                <div>
+                    <span id="error_text" class="help has-text-danger is-hidden">Custom error message</span>
+                </div>
+                <div class="login-btn-box">
+                    <input id="btnEdit" class="button" type="button" value="Edit Details">
+                    <input id="btnSave" class="button is-hidden" type="submit" value="Save">
+                    <input id="btnCancel" class="button is-alt is-hidden" type="reset" value="Cancel">
+                    <input id="btnDelete" class="button is-danger is-hidden is-pulled-right" type="reset"
+                        value="Delete Account">
+                </div>
+            </form>
+        </div>
+    </section>
+</div>
+<div id="modal" class="modal">
+    <div class="modal-background"></div>
+    <div class="modal-card">
+        <header class="modal-card-head">
+            <p class="modal-card-title">Are you sure?</p>
+            <button class="delete" aria-label="close"></button>
+        </header>
+        <section class="modal-card-body">
+            <div class="content">
+                <div class="columns">
+                    <p class="">This will permenantly delete your account</p>
+                </div>
+                <div class="login-btn-box">
+                    <form id="delete-user-form" class="" action="" method="post"> {% csrf_token %}
+                        <input name="delete" id="delete" value="delete" hidden>
+                        <input id="btnConfirmDelete" class="button is-danger" type="submit" value="Delete">
+                        <input id="btnConfirmCancel" class="button is-alt" type="reset" value="Cancel">
+                    </form>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+<!-- <div class="is-hidden" id="jsonData" data-json="{{ data }}"></div> -->
+{% endblock content %}
+{% block scripts %}
+<script>
+    let investedIndustry = {{ investedIndustry | safe }}
+    let colorArray = {{ colorArray | safe }}
+    let chartTitle = "{{ chartTitle | safe }}"
+</script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/d3/6.7.0/d3.min.js" integrity="sha512-cd6CHE+XWDQ33ElJqsi0MdNte3S+bQY819f7p3NUHgwQQLXSKjE4cPZTeGNI+vaxZynk1wVU3hoHmow3m089wA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/billboard.js/3.2.0/billboard.min.js" integrity="sha512-9yAiC226dM+uszaJLaDiCx1lVdB1iXvmopsgzbOSJ2MFRn2C7JSVYBzN3ROOLlPzqUiM8KMtYbC0B1x4nmO9nw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script defer type="text/javascript" src="{% static '/scripts/chart.js' %}"></script>
+<script defer type="text/javascript" src="{% static '/scripts/profile.js' %}"></script>
+{% endblock scripts %}

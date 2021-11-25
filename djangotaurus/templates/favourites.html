@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}<title>Favourites</title>{% endblock title %}
+{% block stylesheets %}
+<link rel="preload"  as="style" href="{% static '/datatable/datatables.min.css' %}"/>
+<link rel="preload"  as="script" href="{% static '/datatable/datatables.min.js' %}"/>
+<link rel="stylesheet" type="text/css" href="{% static '/datatable/datatables.min.css' %}"/>
+{% endblock stylesheets %}
+{% block content %}
+<div class="container">
+    <div class="balance-box">
+        <span class="is-size-6 subtitle">TOTAL BALANCE</span>
+        <div class="balance-details">
+            <span>$</span>
+            <span id="balance">{{ user.profile.account_balance }}</span>
+            <span>SGD</span>
+        </div>
+    </div>
+    <div class="block">
+        <table id="favourites" class="display table is-hoverable" aria-label="Favourites">
+            <thead>
+                <tr>
+                    <th scope="col"></th>
+                    <th scope="col">Symbol</th>
+                    <th scope="col">Company</th>
+                    <th scope="col">Sector</th>
+                    <th scope="col">Industry</th>
+                    <th scope="col">Value</th>
+                    <th scope="col"></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for fav in favourites %}
+                <tr id={{ fav.id }} data-href="{% url 'stockDetails' stock_id=fav.id %}">
+                    <td></td>
+                    <td>{{ fav.symbol }}</td>
+                    <td class="name-cell">{{ fav.company }}</td>
+                    <td>{{ fav.sector }}</td>
+                    <td>{{ fav.industry }}</td>
+                    <td>${{ fav.value }}</td>
+                    <td>
+                        <a id="" class="button is-alt is-small my-0" href="{% url 'stockDetails' stock_id=fav.id %}">More Details</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock content %}
+{% block scripts %}
+<script defer type="text/javascript" src="{% static '/datatable/datatables.min.js' %}"></script>
+<script defer type="text/javascript" src="{% static '/scripts/table.js' %}"></script>
+{% endblock scripts %}

@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}<title>History</title>{% endblock title %}
+{% block stylesheets %}
+<link rel="preload"  as="style" href="{% static '/datatable/datatables.min.css' %}"/>
+<link rel="preload"  as="script" href="{% static '/datatable/datatables.min.js' %}"/>
+<link rel="stylesheet" type="text/css" href="{% static '/datatable/datatables.min.css' %}"/>
+{% endblock stylesheets %}
+{% block content %}
+<div class="container">
+    {% if user.is_authenticated %}
+    <div class="balance-box">
+        <span class="is-size-6 subtitle">TOTAL BALANCE</span>
+        <div class="balance-details">
+            <span>$</span>
+            <span id="balance">{{ user.profile.account_balance }}</span>
+            <span>SGD</span>
+        </div>
+    </div>
+    {% endif %}
+    <div class="block">
+        <table id="history" class="display table is-hoverable" aria-label="History">
+            <thead>
+                <tr>
+                    <th scope="col"></th>
+                    <th scope="col">Symbol</th>
+                    <th scope="col">Option</th>
+                    <th scope="col">Purchase Price</th>
+                    <th scope="col">Return Price</th>
+                    <th scope="col">Quantity</th>
+                    <th scope="col">Profit/Loss</th>
+                    <th scope="col"></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for history in history_list %}
+                <tr id={{ history.id }} data-href="{% url 'stockDetails' stock_id=history.id %}">
+                    <td></td>
+                    <td>{{ history.symbol }}</td>
+                    <td>{{ history.option }}</td>
+                    <td>${{ history.purchase }}</td>
+                    <td>${{ history.return }}</td>
+                    <td>{{ history.quantity }}</td>
+                    <td>${{ history.profit }}</td>
+                    <td>
+                        <a id="" class="button is-alt is-small my-0" href="{% url 'stockDetails' stock_id=history.id %}">More Details</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock content %}
+{% block scripts %}
+<script defer type="text/javascript" src="{% static '/datatable/datatables.min.js' %}"></script>
+<script defer type="text/javascript" src="{% static '/scripts/table.js' %}"></script>
+{% endblock scripts %}

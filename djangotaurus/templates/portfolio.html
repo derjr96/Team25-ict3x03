@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}<title>Portfolio</title>{% endblock title %}
+{% block stylesheets %}
+<link rel="preload"  as="style" href="{% static '/datatable/datatables.min.css' %}"/>
+<link rel="preload"  as="script" href="{% static '/datatable/datatables.min.js' %}"/>
+<link rel="stylesheet" type="text/css" href="{% static '/datatable/datatables.min.css' %}"/>
+{% endblock stylesheets %}
+{% block content %}
+<div class="container">
+    {% if user.is_authenticated %}
+    <div class="balance-box">
+        <span class="is-size-6 subtitle">TOTAL BALANCE</span>
+        <div class="balance-details">
+            <span>$</span>
+            <span id="balance">{{ user.profile.account_balance }}</span>
+            <span>SGD</span>
+        </div>
+    </div>
+    {% endif %} 
+    <div class="block">
+        <table id="portfolio" class="display table is-hoverable" aria-label="Portfolio">
+            <thead>
+                <tr>
+                    <th scope="col"></th>
+                    <th scope="col">Symbol</th>
+                    <th scope="col">Company</th>
+                    <th scope="col">Option</th>
+                    <th scope="col">Quantity</th>
+                    <th scope="col">Value</th>
+                    <th scope="col">Invested</th>
+                    <th scope="col"></th>
+                </tr>
+            </thead>
+            <tbody>
+                {%for data in portfolio %}
+                <tr id={{ data.id }} data-href="{% url 'stockDetails' stock_id=data.id %}">
+                    <td></td>
+                    <td>{{ data.symbol }}</td>
+                    <td class="name-cell">{{ data.company }}</td>
+                    <td>{{ data.option }}</td>
+                    <td>{{ data.quantity }}</td>
+                    <td>${{ data.price }}</td>
+                    <td>${{ data.invested }}</td>
+                    <td>
+                        <a id="" class="button is-alt is-small my-0" href="{% url 'stockDetails' stock_id=data.id %}">More Details</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock content %}
+{% block scripts %}
+<script defer type="text/javascript" src="{% static '/datatable/datatables.min.js' %}"></script>
+<script defer type="text/javascript" src="{% static '/scripts/table.js' %}"></script>
+{% endblock scripts %}

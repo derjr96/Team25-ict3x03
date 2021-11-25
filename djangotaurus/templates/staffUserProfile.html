@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}<title>User Details</title>{% endblock title %}
+{% block stylesheets %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/billboard.js/3.2.0/theme/insight.min.css" integrity="sha512-p6dPtWL7wJyUyElkJIZOZeEOq+NsP1myJzFoDqwIl0s2sMJk3mK8gIEzcbzKDZ+8tb/Z++d2Hsh+idqDWGpirw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+{% endblock stylesheets %}
+{% block content %}
+<div class="container">
+    <h1 class="is-size-2 p-2 has-text-centered">User Details</h1>
+    <section class="field-container card is-flex-direction-column">
+        <div class="field">
+            <div class="control is-flex columns is-flex-start">
+                <label class="label bolder is-size-6 column is-one-fifth">Name:&nbsp;</label>
+                <label id="name" class="label is-size-6 column is-narrow">{{ student.profile.first_name }} {{ student.profile.last_name}}</label>
+            </div>
+        </div>
+        <div class="field">
+            <div class="control is-flex columns">
+                <label class="label bolder is-size-6 column is-one-fifth">Email Address:&nbsp;</label>
+                <label id="em" class="label is-size-6 column is-narrow">{{ student.email }}</label>
+            </div>
+        </div>
+        <div class="field">
+            <div class="control is-flex columns">
+                <label class="label bolder is-size-6 column is-one-fifth">Date of Birth:&nbsp;</label>
+                <label id="dob" class="label is-size-6 column is-narrow">{{ student.profile.date_of_birth }}</label>
+            </div>
+        </div>
+    </section>
+    <section class="card">
+        <div id="chart" class=""></div>
+        <form id="staff-user-form" class="" action="" method="post"> {% csrf_token %}
+            <div class="field">
+                <div class="control is-flex columns">
+                    <label class="label bolder is-size-6 column is-one-fifth">Available Balance:&nbsp;</label>
+                    <label id="bal" class="label is-size-6 column is-narrow">SGD {{ student.profile.account_balance }}</label>
+                </div>
+            </div>
+            <div class="field">
+                <div class="control is-flex columns">
+                    <label class="label bolder is-size-6 column is-one-fifth">Invested Amount:&nbsp;</label>
+                    <label id="inv" class="label is-size-6 column is-narrow">SGD {{ invested }}</label>
+                </div>
+            </div>
+            <div class="field">
+                <div class="control is-flex columns">
+                    <label class="label bolder is-size-6 column is-one-fifth">Total Holding:&nbsp;</label>
+                    <label id="hol" class="label is-size-6 column is-narrow">SGD {{ total }}</label>
+                </div>
+            </div>
+            <div class="field">
+                <div class="control">
+                    <label class="label bolder is-size-6">Deposit Virtual Credits (SGD):&nbsp;</label>
+                    <input id="deposit" name="deposit" class="input" type="number" placeholder="0.00" minlength="0" maxlength="6"
+                        min=100 max=500 step=0.1 onkeyup="doValidate(this)" required>
+                    <p class="help in-field" data-help="helper">A mininum of SGD 100.00 and a maximum of SGD 500.0 can be given to this user.</p>
+                    <div class="deposit-box">
+                        <input id="btnDeposit" class="button is-pulled-right" type="submit" value="Deposit">
+                    </div>
+                </div>
+            </div>
+        </form>
+        <div class="button-set">
+            <a id="btnHistory" class="button is-alt is-yellow" href="{% url 'history-staff' user_id=student.id %}">View History</a>
+            <a id="btnPortfolio" class="button is-alt is-orange" href="{% url 'portfolio-staff' user_id=student.id %}">View Portfolio</a>
+            <input id="btnReset" class="button is-danger" type="button"
+                value="Reset Account">
+        </div>
+    </section>
+</div>
+<div id="modal" class="modal">
+    <div class="modal-background"></div>
+    <div class="modal-card">
+        <header class="modal-card-head">
+            <p class="modal-card-title">Are you sure?</p>
+            <button class="delete" aria-label="close"></button>
+        </header>
+        <section class="modal-card-body">
+            <div class="content">
+                <div class="columns">
+                    <p class="">This will reset the user's account balance</p>
+                </div>
+                <div class="login-btn-box">
+                    <form id="reset-user-form" class="" action="" method="post"> {% csrf_token %}
+                        <input name="reset" id="reset" value="reset" hidden>
+                        <input id="btnConfirmReset" class="button is-danger" type="submit" value="Reset">
+                        <input id="btnConfirmCancel" class="button is-alt" type="reset" value="Cancel">
+                    </form>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+</div>
+{% endblock content %}
+{% block scripts %}
+<script>
+    const investedIndustry = {{ investedIndustry | safe }}
+    const colorArray = {{ colorArray | safe }}
+    const chartTitle = "{{ chartTitle | safe }}"
+</script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/d3/6.7.0/d3.min.js" integrity="sha512-cd6CHE+XWDQ33ElJqsi0MdNte3S+bQY819f7p3NUHgwQQLXSKjE4cPZTeGNI+vaxZynk1wVU3hoHmow3m089wA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/billboard.js/3.2.0/billboard.min.js" integrity="sha512-9yAiC226dM+uszaJLaDiCx1lVdB1iXvmopsgzbOSJ2MFRn2C7JSVYBzN3ROOLlPzqUiM8KMtYbC0B1x4nmO9nw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script defer type="text/javascript" src="{% static '/scripts/chart.js' %}"></script>
+<script defer type="text/javascript" src="{% static '/scripts/staffuserprofile.js' %}"></script>
+{% endblock scripts %}

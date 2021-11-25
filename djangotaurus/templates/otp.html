@@ -1,0 +1,79 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+    {% load pwa %}
+    <head>
+        {% progressive_web_app_meta %}
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Verify Login</title>
+        <link rel="apple-touch-icon" sizes="180x180" href="{% static '/images/Logo-180.png' %}">
+        <link rel="icon" type="image/png" sizes="32x32" href="{% static '/images/favicon-32x32.png' %}">
+        <link rel="icon" type="image/png" sizes="16x16" href="{% static '/images/favicon-16x16.png' %}">
+        <link rel="preload" as="script" href="{% static '/scripts/jQuery-v3.6.0.js' %}">
+        <link rel="preload" as="style" href="{% static '/style/style.css' %}">
+        <link rel="stylesheet" type="text/css" href="{% static '/style/style.css' %}">
+    </head>
+
+    <body>
+        <div class="container">
+            <div class="full-card">
+                {% if messages %}
+                <ul class="messages">
+                    {% for message in messages %}
+                    <li class="notification is-{{message.tags}}">
+                        <button class="delete"></button>
+                        <p class="is-size-6 has-text-centered">{{ message }}</p>
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+                <h1 class="login-header is-size-2 has-text-centered">Enter OTP</h1>
+                <form id="otp-form" class="login-form" action="" method="post"> {% csrf_token %}
+                    <div class="field">
+                        <div class="control">
+                            <label for="" class="label bolder is-size-4">Please Enter the OTP to Login</label>
+                            <label for="" class="label">An OTP has been send to <u>{{ email }}</u></label>
+                            <div id="otp-container">
+                                <input class="input miniInput" id="otp1" name="otp1" oninput="inputInsideOtpInput(this)"
+                                    onchange="doValidate(this)" maxlength="1" min="0" max="9" type="number" required>
+
+                                <input class="input miniInput" id="otp2" name="otp2" oninput="inputInsideOtpInput(this)"
+                                    onchange="doValidate(this)" maxlength="1" min="0" max="9" type="number" required>
+
+                                <input class="input miniInput" id="otp3" name="otp3" oninput="inputInsideOtpInput(this)"
+                                    onchange="doValidate(this)" maxlength="1" min="0" max="9" type="number" required>
+
+                                <input class="input miniInput" id="otp4" name="otp4" oninput="inputInsideOtpInput(this)"
+                                    onchange="doValidate(this)" maxlength="1" min="0" max="9" type="number" required>
+
+                                <input class="input miniInput" id="otp5" name="otp5" oninput="inputInsideOtpInput(this)"
+                                    onchange="doValidate(this)" onchange="doValidate(this)" maxlength="1" min="0"
+                                    max="9" type="number" required>
+
+                                <input class="input miniInput" id="otp6" name="otp6" oninput="inputInsideOtpInput(this)"
+                                    onchange="doValidate(this)" maxlength="1" min="0" max="9" type="number">
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <span id="error_text" class="help has-text-danger is-hidden">Custom error message</span>
+                    </div>
+                    <div class="mt-4">
+                        <input id="btnSubmit" class="button" type="submit" value="Submit">
+                    </div>
+                </form>
+                <form id="otp-resend-form" class="" action="" method="post">{% csrf_token %}
+                    <div class="mt-4">
+                        <label for="" class="label">Did not receive an OTP?</label>
+                        <input id="btnResend" name="btnResend" class="button is-alt is-orange" type="submit" value="Resend OTP">
+                    </div>
+                </form>
+            </div>
+        </div>
+        <script defer type="text/javascript" src="{% static '/scripts/jQuery-v3.6.0.js' %}"></script>
+        <script defer type="text/javascript" src="{% static '/scripts/otp.js' %}"></script>
+        <script defer type="text/javascript" src="{% static '/scripts/notification.js' %}"></script>
+    </body>
+</html>

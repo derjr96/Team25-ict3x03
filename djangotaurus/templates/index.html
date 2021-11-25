@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}<title>Home</title>{% endblock title %}
+{% block stylesheets %}
+<link rel="preload"  as="style" href="{% static '/datatable/datatables.min.css' %}"/>
+<link rel="preload"  as="script" href="{% static '/datatable/datatables.min.js' %}"/>
+<link rel="stylesheet" type="text/css" href="{% static '/datatable/datatables.min.css' %}"/>
+{% endblock stylesheets %}
+{% block content %}
+<div class="container">
+    {% if user.is_authenticated %}
+    <div class="balance-box">
+        <span class="is-size-6 subtitle">TOTAL BALANCE</span>
+        <div class="balance-details">
+            <span>$</span>
+            <span id="balance">{{ user.profile.account_balance }}</span>
+            <span>SGD</span>
+        </div>
+    </div>
+    {% endif %}
+    <div class="block">
+        <table id="market" class="display table is-hoverable" aria-label="Trade Market">
+            <thead>
+                <tr>
+                    <th scope="col"></th>
+                    <th scope="col">Symbol</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Open</th>
+                    <th scope="col">Close</th>
+                    <th scope="col">High</th>
+                    <th scope="col">Low</th>
+                    <th scope="col"></th>
+                </tr>
+            </thead>
+            <tbody>
+                {%for stock_price in stock_prices%}
+                <tr id="{{ stock_price.id }}" class="clickable">
+                    <td></td>
+                    <td>{{ stock_price.stock__stock_symbol }}</td>
+                    <td class="name-cell">{{ stock_price.stock__company_name }}</td>
+                    <td>${{ stock_price.open }}</td>
+                    <td>${{ stock_price.close }}</td>
+                    <td>${{ stock_price.high }}</td>
+                    <td>${{ stock_price.low }}</td>
+                    <td>
+                        <a id="" class="button is-alt is-small my-0" href="{% url 'stockDetails' stock_id=stock_price.stock__id %}">More Details</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock content %}
+{% block scripts %}
+<script defer type="text/javascript" src="{% static '/datatable/datatables.min.js' %}"></script>
+<script defer type="text/javascript" src="{% static '/scripts/table.js' %}"></script>
+{% endblock scripts %}

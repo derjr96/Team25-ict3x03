@@ -1,0 +1,49 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+    {% load pwa %}
+    <head>
+        {% progressive_web_app_meta %}
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Verify Email</title>
+        <link rel="apple-touch-icon" sizes="180x180" href="{% static '/images/Logo-180.png' %}">
+        <link rel="icon" type="image/png" sizes="32x32" href="{% static '/images/favicon-32x32.png' %}">
+        <link rel="icon" type="image/png" sizes="16x16" href="{% static '/images/favicon-16x16.png' %}">
+        <link rel="preload" as="script" href="{% static '/scripts/jQuery-v3.6.0.js' %}">
+        <link rel="preload" as="style" href="{% static '/style/style.css' %}">
+        <link rel="stylesheet" type="text/css" href="{% static '/style/style.css' %}">
+    </head>
+
+    <body>
+        <div class="container">
+            {% if messages %}
+                <ul class="messages">
+                    {% for message in messages %}
+                    <li class="notification is-{{message.tags}}">
+                        <button class="delete"></button>
+                        <p class="is-size-6 has-text-centered">{{ message }}</p>
+                    </li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+            <div class="full-card">
+                <object class="logo" data="{% static '/svg/Logo.svg' %}" type="image/svg+xml">
+                    <img src="{% static '/svg/Logo.svg' %}" alt="Diamond Hands"/>
+                  </object>
+                <h1 class="is-size-3 has-text-centered">Welcome to Diamond Hands &#10024</h1>
+                <div class="has-text-centered">
+                    <p class="is-size-5 p-4">An email has been sent to <u>{{ email }}</u> to verify your email address</p>
+                    <form id="resend-email-form" class="" action="" method="post"> {% csrf_token %}
+                        <input name="resend" id="resend" value="resend" hidden>
+                        <input id="btnResend" class="button is-medium" type="submit" value="Resend Email">
+                    </form>
+                </div>
+            </div>
+        </div>
+        <script defer type="text/javascript" src="{% static '/scripts/jQuery-v3.6.0.js' %}"></script>
+        <script defer type="text/javascript" src="{% static '/scripts/verifySuccess.js' %}"></script>
+        <script defer type="text/javascript" src="{% static '/scripts/notification.js' %}"></script>
+    </body>
+</html>

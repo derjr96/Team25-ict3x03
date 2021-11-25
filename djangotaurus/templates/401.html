@@ -1,0 +1,30 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+    {% load pwa %}
+    <head>
+        {% progressive_web_app_meta %}
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>401 Unauthorized!</title>
+        <link rel="apple-touch-icon" sizes="180x180" href="{% static '/images/Logo-180.png' %}">
+        <link rel="icon" type="image/png" sizes="32x32" href="{% static '/images/favicon-32x32.png' %}">
+        <link rel="icon" type="image/png" sizes="16x16" href="{% static '/images/favicon-16x16.png' %}">
+        <link rel="stylesheet" type="text/css" href="{% static '/style/style.css' %}">
+    </head>
+    <body>
+        <div class="container">
+            <div class="full-card">
+                <object class="illus-size" data="{% static '/images/401.png' %}" >
+                    <img src="{% static '/images/401.png' %}" alt="401 Unauthorized" />
+                </object>
+				{% endwith %}
+                <label class="label is-size-5 is-size-6-mobile has-text-centered mt-4">Authorisation Required</label>
+                <div class="button-set is-align-items-center">
+                    <a id="btnBackToHome" class="button is-alt " href="{% url 'index' %}">&#11013 Back to Home</a>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
